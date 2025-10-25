@@ -8,6 +8,14 @@
     "lib",
     "dist"
   ],
+  "contributors": [
+    "小舍 <DMB-codegang@users.noreply.github.com>"
+  ],
+  "homepage": "https://github.com/DMB-codegang/koishi-plugin-mc-login",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/DMB-codegang/koishi-plugin-mc-login.git"
+  },
   "license": "AGPL-3.0-only",
   "scripts": {},
   "keywords": [
