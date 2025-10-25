@@ -5,7 +5,7 @@ export class database {
         this.ctx = ctx
         ctx.model.extend('mcl', {
             playerName: 'string', // 玩家在mc中的用户名
-            lastLoginTime: 'time',
+            lastLoginTime: 'timestamp',
             playerID: 'string',// 玩家绑定的平台id
         }, { autoInc: true, primary: ['playerName'] })
     }

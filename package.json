@@ -1,7 +1,7 @@
 {
   "name": "koishi-plugin-mc-login",
   "description": "一款用于绑定qq号和mc",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "main": "lib/index.js",
   "typings": "lib/index.d.ts",
   "files": [
