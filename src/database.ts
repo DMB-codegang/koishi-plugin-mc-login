@@ -5,7 +5,7 @@ export class database {
         this.ctx = ctx
         ctx.model.extend('mcl', {
             playerName: 'string', // 玩家在mc中的用户名
-            lastLoginTime: 'integer',
+            lastLoginTime: 'time',
             playerID: 'string',// 玩家绑定的平台id
         }, { autoInc: true, primary: ['playerName'] })
     }
@@ -27,7 +27,7 @@ export class database {
 
     async register(playerID: string, playerName: string): Promise<'success' | 'failed'> {
         try {
-            await this.ctx.database.create('mcl', { playerID, playerName: playerName, lastLoginTime: Date.now() })
+            await this.ctx.database.create('mcl', { playerID, playerName: playerName, lastLoginTime: new Date() })
             return 'success'
         } catch (error) {
             return 'failed'
@@ -43,6 +43,6 @@ export class database {
     }
 
     private async updateLoginTime(playerID: string) {
-        await this.ctx.database.set('mcl', { playerID: playerID }, { lastLoginTime: Date.now() })
+        await this.ctx.database.set('mcl', { playerID: playerID }, { lastLoginTime: new Date() })
     }
 }

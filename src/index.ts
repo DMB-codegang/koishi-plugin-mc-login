@@ -13,7 +13,7 @@ import { database } from './database'
 interface mcl {
   playerID: string
   playerName: string
-  lastLoginTime: number
+  lastLoginTime: Date
 }
 declare module 'koishi' {
   interface Tables {
