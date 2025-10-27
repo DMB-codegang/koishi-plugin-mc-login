@@ -52,14 +52,14 @@ export function apply(ctx: Context, config: Config) {
           if (!newPlayers.includes(player)) {
             return // 玩家已经离开，不处理
           }
-          
+
           const playerID = await db.getPlayerID(player)
           if (playerID === null) {
             // 再次检查玩家是否仍在服务器中
             if (!newPlayers.includes(player)) {
               return // 玩家已经离开，不发送验证码
             }
-            const verifyCode = VerifyingSystem.addVerifyingUser(ctx, player, config.verifyTimeout)
+            const verifyCode = VerifyingSystem.addVerifyingUser(ctx, player, config.verifyTimeout, logger)
             await rconClient.kickPlayer(player, '请先绑定账号，验证码：' + verifyCode.code)
             logger.info('玩家 %s 未注册，已发送验证码 %s', player, verifyCode.code)
           } else {
@@ -77,8 +77,8 @@ export function apply(ctx: Context, config: Config) {
     rconClient.close()
   })
 
-  ctx.command('mcl bind <code>')
-    .action(async ({ session }, _, code) => {
+  ctx.command('mcl.bind <code>')
+    .action(async ({ session }, code) => {
       const player = VerifyingSystem.verifyUser(Number(code))
       if (player) {
         // 确认绑定
@@ -89,8 +89,50 @@ export function apply(ctx: Context, config: Config) {
         }
         await db.register(session.userId, player.playerName)
         session.send('玩家 ' + player.playerName + ' 已成功绑定账号')
+        logger.info('玩家 %s 已成功绑定账号', player.playerName)
       } else {
         session.send('验证码无效')
       }
     })
+
+  ctx.command('mcl.list')
+    .action(async ({ session }) => {
+      const playerNames = await db.getPlayerName(session.userId)
+      if (playerNames.length > 0) {
+        session.send('您绑定的账号有：' + playerNames.join(', '))
+      } else {
+        session.send('您未绑定任何账号')
+      }
+    })
+
+    ctx.command('mcl.unbind <playerName>')
+      .action(async ({ session }, playerName) => {
+        // 检查玩家是否绑定了该账号
+        const playerID = await db.getPlayerID(playerName)
+        if (playerID !== session.userId) {
+          return '您未绑定该账号'
+        }
+        await session.send('【警告】您正在解绑账号操作\n是否确认解绑账号 ' + playerName + '？\n输入“确认”以解绑，其他任意内容取消解绑')
+        const confirm = await session.prompt(60000)
+        if (!confirm || !(confirm == '确认' || confirm == '“确认”')) {
+          return '解绑已取消'
+        }
+        const result = await db.unbind(playerName)
+        if (result == 'success') {
+          session.send('您的账号已成功解绑')
+        } else {
+          session.send('解绑失败')
+        }
+      })
+
+      // ctx.command('mcl.rp <playerName>')
+      //   .action(async ({ session }, playerName) => {
+      //     // 检查玩家是否绑定了该账号
+      //     const playerID = await db.getPlayerID(playerName)
+      //     if (playerID !== session.userId) {
+      //       return '您未绑定该账号'
+      //     }
+      //     await rconClient.resetPassword(playerName, password)
+      //     session.send('账号 ' + playerName + ' 的密码已成功重置')
+      //   })
 }

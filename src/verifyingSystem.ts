@@ -1,4 +1,4 @@
-import { Context } from "koishi"
+import { Context, Logger } from "koishi"
 
 
 interface verifying_users {
@@ -12,7 +12,7 @@ export class VerifyingSystem {
     private static verifying_users: verifying_users[] = []
 
     // 添加验证用户,返回取消函数
-    static addVerifyingUser(ctx: Context, playerName: string, timeout: number): {code: number, cancel: () => void} {
+    static addVerifyingUser(ctx: Context, playerName: string, timeout: number, log: Logger): {code: number, cancel: () => void} {
         const user = this.verifying_users.find(user => user.playerName === playerName)
         if (user) {
             return {code: user.code, cancel: user.cancel}
@@ -24,16 +24,19 @@ export class VerifyingSystem {
         } while (this.verifying_users.find(user => user.code === code))
 
         const cancel = ctx.setTimeout(() => {
-            // 删除验证消息
+            log.info(`玩家 ${playerName} 验证超时`)
             this.removeVerifyingUser(playerName)
         }, timeout * 1000)
         this.verifying_users.push({
             playerID: null, playerName, code, cancel
         })
-        return {code, cancel: () => {
+
+        // 创建取消函数
+        const cancelFunc = () => {
             cancel()
             this.removeVerifyingUser(playerName)
-        }}
+        }
+        return {code, cancel: cancelFunc}
     }
 
     static verifyUser(code: number): {playerID: string, playerName: string} | null {

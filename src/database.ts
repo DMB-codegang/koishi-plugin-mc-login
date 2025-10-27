@@ -34,6 +34,20 @@ export class database {
         }
     }
 
+    async unbind(playerName: string): Promise<'success' | 'failed'> {
+        try {
+            await this.ctx.database.remove('mcl', { playerName })
+            return 'success'
+        } catch (error) {
+            return 'failed'
+        }
+    }
+
+    async getPlayerName(playerID: string): Promise<string[]> {
+        const player = await this.ctx.database.get('mcl', { playerID })
+        return player.map((item) => item.playerName)
+    }
+
     async getPlayerID(playerName: string): Promise<string | null> {
         const player = await this.ctx.database.get('mcl', { playerName })
         if (player.length > 0) {

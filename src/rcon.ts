@@ -42,8 +42,14 @@ export class rcon {
                 await this.rcon.connect()
             }
             const playerList = await this.rcon.send('list')
+            
+            if (playerList.indexOf('players online: ') === -1) {
+                return
+            }
             let newPlayerList = (playerList.substring(playerList.indexOf('players online: ')+16)).split(', ')
             
+            // 过滤掉名称中包含空格的非正常玩家
+            newPlayerList = newPlayerList.filter(player => !player.includes(' '))
             // 修复：当服务器没有玩家时，过滤掉空字符串
             newPlayerList = newPlayerList.filter(player => player.trim() !== '')
             
@@ -87,6 +93,17 @@ export class rcon {
             await this.rcon.send('kick '+ playerName + ' ' + message)
         } catch (error) {
             console.error('Failed to kick player:', error)
+        }
+    }
+
+    async resetPassword(playerName: string, password: string) {
+        try {
+            if (!this.rcon.socket) {
+                await this.rcon.connect()
+            }
+            await this.rcon.send('auth update '+ playerName + ' ' + password)
+        } catch (error) {
+            console.error('Failed to reset password:', error)
         }
     }
 }
