@@ -77,6 +77,7 @@ export function apply(ctx: Context, config: Config) {
     rconClient.close()
   })
 
+  // 绑定账号
   ctx.command('mcl.bind <code>')
     .action(async ({ session }, code) => {
       const player = VerifyingSystem.verifyUser(Number(code))
@@ -95,6 +96,7 @@ export function apply(ctx: Context, config: Config) {
       }
     })
 
+    // 查看绑定账号列表
   ctx.command('mcl.list')
     .action(async ({ session }) => {
       const playerNames = await db.getPlayerName(session.userId)
@@ -105,6 +107,7 @@ export function apply(ctx: Context, config: Config) {
       }
     })
 
+    // 解绑账号
     ctx.command('mcl.unbind <playerName>')
       .action(async ({ session }, playerName) => {
         // 检查玩家是否绑定了该账号

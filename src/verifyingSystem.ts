@@ -39,6 +39,7 @@ export class VerifyingSystem {
         return {code, cancel: cancelFunc}
     }
 
+    // 验证用户,返回玩家ID和玩家名
     static verifyUser(code: number): {playerID: string, playerName: string} | null {
         const playerName = this.checkVerifyingUser(code)
         if (playerName) {
@@ -49,6 +50,7 @@ export class VerifyingSystem {
         return null
     }
 
+    // 检查是否有正在验证的用户
     private static checkVerifyingUser(code: number): {playerID: string, playerName: string} | null {
         const user = this.verifying_users.find(user => user.code === code)
         if (user) {
@@ -57,6 +59,7 @@ export class VerifyingSystem {
         return null
     }
 
+    // 删除验证用户
     private static removeVerifyingUser(playerName: string) {
         this.verifying_users = this.verifying_users.filter(user => user.playerName !== playerName)
     }

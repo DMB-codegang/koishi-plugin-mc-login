@@ -10,6 +10,7 @@ export class database {
         }, { autoInc: true, primary: ['playerName'] })
     }
 
+    // 玩家登录
     async login(playerID: string): Promise<'success' | 'unregistered' | 'failed'> {
         // 检查playerID是否存在
         try {
@@ -25,6 +26,7 @@ export class database {
         }
     }
 
+    // 玩家注册
     async register(playerID: string, playerName: string): Promise<'success' | 'failed'> {
         try {
             await this.ctx.database.create('mcl', { playerID, playerName: playerName, lastLoginTime: new Date() })
@@ -34,6 +36,7 @@ export class database {
         }
     }
 
+    // 玩家解绑
     async unbind(playerName: string): Promise<'success' | 'failed'> {
         try {
             await this.ctx.database.remove('mcl', { playerName })
@@ -43,11 +46,13 @@ export class database {
         }
     }
 
+    // 获取玩家ID绑定的玩家名列表
     async getPlayerName(playerID: string): Promise<string[]> {
         const player = await this.ctx.database.get('mcl', { playerID })
         return player.map((item) => item.playerName)
     }
 
+    // 获取玩家名绑定的玩家ID
     async getPlayerID(playerName: string): Promise<string | null> {
         const player = await this.ctx.database.get('mcl', { playerName })
         if (player.length > 0) {
@@ -56,6 +61,7 @@ export class database {
         return null
     }
 
+    // 更新玩家登录时间
     private async updateLoginTime(playerID: string) {
         await this.ctx.database.set('mcl', { playerID: playerID }, { lastLoginTime: new Date() })
     }
