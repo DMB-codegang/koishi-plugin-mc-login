@@ -2,14 +2,13 @@
 
 [![npm](https://img.shields.io/npm/v/koishi-plugin-mc-login?style=flat-square)](https://www.npmjs.com/package/koishi-plugin-mc-login)
 
-一款用于绑定qq号和mc的koishi插件，基于rcon协议实现
+一款用于绑定qq号和mc的koishi插件
 
 > [!warning]
-> 本插件安全性不佳，一旦插件与服务器连接断开，将无法阻止新的账号进入。  
-> 如果您依然决定使用该插件，**请确保您的网络环境足够安全稳定（例如仅本机或内网）**  
-> 在使用过程中产生的任何损失，均由您自行承担  
->  
-> 什么你问我为什么不做mod和插件提供支持？我不会Java啊，如果有大佬愿意做我也会愿意适配
+> 该插件断开服务器连接后将无法阻止用户进入服务器，因此**请确保您的网络环境安全稳定（例如仅本机或内网）**
+
+> [!info]
+> 该插件正在制作新版本，将采用白名单功能实现
 
 ## 配置插件
 
